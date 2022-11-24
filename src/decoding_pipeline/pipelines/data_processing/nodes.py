@@ -182,7 +182,7 @@ def plot_bci_states(partitioned_data, states, patient_id):
             
         fig.subplots_adjust(hspace=0.4)
 
-        save_dict[partition_key] = fig
+        save_dict[f"{partition_key}.png"] = fig
 
         plt.close()
 

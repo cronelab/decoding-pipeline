@@ -63,7 +63,7 @@ def create_pipeline(**kwargs) -> Pipeline:
         node(
             func=plot_bci_states,
             inputs=["center_out_extracted_pkl", "params:bci_states", "params:patient_id"],
-            outputs=["state_plots"],
+            outputs="state_plots",
             name="plot_bci_states_node"
             
         )
