@@ -10,6 +10,13 @@ center_out_dat:
   filename_suffix: ".dat"
   layer: raw
 
+state_plots:
+  type: PartitionedDataSet
+  dataset: matplotlib.MatplotlibWriter
+  path: data/08_reporting/CC01/ccCenterOut/state_plots
+  filename_suffix: ".png"
+  layer: reporting
+
 center_out_hdf5:
   type: PartitionedDataSet
   dataset: decoding_pipeline.io.hdf5_dataset.HDF5Dataset
@@ -35,6 +42,8 @@ prefixed_channels:
   type: json.JSONDataSet
   filepath: data/03_primary/CC01/ccCenterOut/prefixed_channels.json
   layer: primary
+
+
 
 # center_out_dat:
 #   type: decoding_pipeline.io.dat_dataset.DATDataset

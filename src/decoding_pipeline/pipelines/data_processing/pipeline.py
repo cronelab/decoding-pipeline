@@ -3,7 +3,7 @@ This is a boilerplate pipeline 'data_processing'
 generated using Kedro 0.18.3
 """
 
-from .nodes import import_single_electrode_information, extract_single_channel_labels, elim_single_channel_labels, prefix_single_channel_info, extract_bci_data
+from .nodes import import_single_electrode_information, extract_single_channel_labels, elim_single_channel_labels, prefix_single_channel_info, extract_bci_data, plot_bci_states
 
 from kedro.pipeline import Pipeline, node
 from kedro.pipeline.modular_pipeline import pipeline
@@ -59,12 +59,26 @@ def create_pipeline(**kwargs) -> Pipeline:
     outputs="center_out_extracted_pkl",
     parameters={"params:patient_id": "params:patient_id", "params:gain": "params:gain", "params:bci_states": "params:bci_states"})
 
+    dataset_metrics_pipeline = pipeline([
+        node(
+            func=plot_bci_states,
+            inputs=["center_out_extracted_pkl", "params:bci_states", "params:patient_id"],
+            outputs=["state_plots"],
+            name="plot_bci_states_node"
+            
+        )
+    ],
+    namespace="dataset_metrics",
+    inputs=set(["center_out_extracted_pkl"]),
+    outputs="state_plots",
+    parameters={"params:patient_id": "params:patient_id", "params:bci_states": "params:bci_states"})
+
     # return channel_labelling_pipeline + data_extraction_pipeline
 
     return pipeline(
-        pipe=channel_labelling_pipeline + data_extraction_pipeline,
+        pipe=channel_labelling_pipeline + data_extraction_pipeline + dataset_metrics_pipeline,
         namespace="data_preprocessing",
         inputs=set(["center_out_hdf5"]),
-        outputs={"prefixed_channels": "prefixed_channels", "center_out_extracted_pkl": "center_out_extracted_pkl"},
+        outputs={"prefixed_channels": "prefixed_channels", "center_out_extracted_pkl": "center_out_extracted_pkl", "state_plots": "state_plots"},
         parameters={"params:patient_id": "params:patient_id", "params:gain": "params:gain", "params:bci_states": "params:bci_states"}
     )

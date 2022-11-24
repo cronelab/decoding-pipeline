@@ -6,6 +6,8 @@ generated using Kedro 0.18.3
 from typing import Dict
 
 import numpy as np
+import matplotlib.pyplot as plt
+
 
 
 def _import_electrode_information(h5file):
@@ -111,7 +113,18 @@ def extract_bci_data(h5_data, selected_channels, electrode_labels, states, patie
         eeg_data = eeg.dataset[:]
 
         aux = h5file.group.aux()
-        stimuli_data = aux[:, selected_states]
+
+        print(selected_states)
+
+        # Populating stimuli data array in the correct ordering
+        stimuli_data = np.empty((len(aux.dataset[:]), len(selected_states)))
+        for idx, state in enumerate(selected_states):
+            print(f"{'state_printing':*<40}")
+            print(state)
+
+            stimuli_data[:, idx] = aux[:, [state]][:, 0]
+
+        # stimuli_data = aux[:, selected_states]
 
         eeg_data = eeg_data*gain
         stimuli_data = stimuli_data.astype(int)
@@ -142,6 +155,41 @@ def extract_bci_data(h5_data, selected_channels, electrode_labels, states, patie
         }
     
     return save_dict
+
+def plot_bci_states(partitioned_data, states, patient_id):
+    state_names = states[patient_id]['center_out']
+
+    save_dict = {}
+    for partition_key, partition_load_func in partitioned_data.items():
+        data_dict = partition_load_func()
+
+        stimuli = data_dict['stimuli']
+        sampling_rate = data_dict['sampling_rate']
+
+        num_stimuli = stimuli.shape[-1]
+
+        N = stimuli.shape[0]
+        n_samples = np.arange(0, N)
+        t_samples = n_samples/sampling_rate
+
+        fig, sub_axs = plt.subplots(num_stimuli, figsize=(20,10))
+
+        for idx, ax in enumerate(sub_axs):
+            subplot_data = stimuli[:, idx]
+            ax.plot(t_samples, subplot_data)
+            ax.set_ylabel('State')
+            ax.set_title(state_names[idx])
+            
+        fig.subplots_adjust(hspace=0.4)
+
+        save_dict[partition_key] = fig
+
+        plt.close()
+
+    return save_dict
+
+
+
 
 
 
