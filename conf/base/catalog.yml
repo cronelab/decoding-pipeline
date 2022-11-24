@@ -1,0 +1,27 @@
+# Here you can define all your data sets by using simple YAML syntax.
+#
+# Documentation for this file format can be found in "The Data Catalog"
+# Link: https://kedro.readthedocs.io/en/stable/05_data/01_data_catalog.html
+
+center_out_dat:
+  type: PartitionedDataSet
+  dataset: decoding_pipeline.io.dat_dataset.DATDataset
+  path: data/01_raw/CC01/ccCenterOut
+  filename_suffix: ".dat"
+  layer: raw
+
+center_out_hdf5:
+  type: PartitionedDataSet
+  dataset: decoding_pipeline.io.hdf5_dataset.HDF5Dataset
+  path: data/01_raw/CC01/ccCenterOut
+  filename_suffix: ".hdf5"
+  layer: raw
+
+prefixed_channels:
+  type: json.JSONDataSet
+  filepath: data/03_primary/CC01/ccCenterOut/prefixed_channels.json
+  layer: primary
+
+# center_out_dat:
+#   type: decoding_pipeline.io.dat_dataset.DATDataset
+#   filepath: data/01_raw/ccCenterOut/ccCenterOut_962022_S01.dat
