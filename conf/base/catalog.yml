@@ -17,6 +17,20 @@ center_out_hdf5:
   filename_suffix: ".hdf5"
   layer: raw
 
+center_out_extracted_pkl:
+  type: PartitionedDataSet
+  dataset: 
+    type: pickle.PickleDataSet
+    backend: pickle
+  path: data/02_intermediate/CC01/ccCenterOut
+  filename_suffix: ".pkl"
+  layer: intermediate
+
+selected_channels:
+  type: json.JSONDataSet
+  filepath: data/03_primary/CC01/ccCenterOut/selected_channels.json
+  layer: primary
+
 prefixed_channels:
   type: json.JSONDataSet
   filepath: data/03_primary/CC01/ccCenterOut/prefixed_channels.json

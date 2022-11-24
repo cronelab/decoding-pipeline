@@ -3,13 +3,13 @@ This is a boilerplate pipeline 'data_processing'
 generated using Kedro 0.18.3
 """
 
-from .nodes import import_single_electrode_information, extract_single_channel_labels, elim_single_channel_labels, prefix_single_channel_info
+from .nodes import import_single_electrode_information, extract_single_channel_labels, elim_single_channel_labels, prefix_single_channel_info, extract_bci_data
 
 from kedro.pipeline import Pipeline, node
 from kedro.pipeline.modular_pipeline import pipeline
 
 def create_pipeline(**kwargs) -> Pipeline:
-    return pipeline([
+    channel_labelling_pipeline = pipeline([
         node(
             func=import_single_electrode_information,
             inputs="center_out_hdf5",
@@ -37,5 +37,32 @@ def create_pipeline(**kwargs) -> Pipeline:
     ],
     namespace="channel_labelling",
     inputs="center_out_hdf5",
-    outputs="prefixed_channels",
+    outputs={"prefixed_channels": "prefixed_channels", "selected_channels": "selected_channels"},
     parameters={"params:patient_id": "params:patient_id"})
+
+    data_extraction_pipeline = pipeline([
+        node(
+            func=import_single_electrode_information,
+            inputs="center_out_hdf5",
+            outputs="electrode_labels",
+            name="import_electrode_information_node",
+        ),
+        node(
+            func=extract_bci_data,
+            inputs=["center_out_hdf5", "selected_channels", "electrode_labels", "params:bci_states", "params:patient_id", "params:gain"],
+            outputs="center_out_extracted_pkl",
+            name="extract_bci_data_node"
+        )
+    ],
+    namespace="data_extraction",
+    inputs=set(["center_out_hdf5", "selected_channels"]),
+    outputs="center_out_extracted_pkl",
+    parameters={"params:patient_id": "params:patient_id", "params:gain": "params:gain", "params:bci_states": "params:bci_states"})
+
+    return pipeline(
+        pipe=channel_labelling_pipeline + data_extraction_pipeline,
+        namespace="data_preprocessing",
+        inputs=set(["center_out_hdf5", "selected_channels"]),
+        outputs={"prefixed_channels": "prefixed_channels", "selected_channels": "selected_channels"},
+        parameters={"params:patient_id": "params:patient_id", "params:gain": "params:gain", "params:bci_states": "params:bci_states"}
+    )

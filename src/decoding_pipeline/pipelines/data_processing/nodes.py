@@ -89,3 +89,60 @@ def prefix_single_channel_info(channels, patient_id, grid_split):
                 'ch_suffixes_unique': list(ch_suffixes_unique),
                 'ch_suffix_order': ch_suffix_order 
             }
+
+def extract_bci_data(h5_data, selected_channels, electrode_labels, states, patient_id, gain):
+    eeglabels = electrode_labels['eeglabels']
+    auxlabels = electrode_labels['auxlabels']
+
+    ch_include = selected_channels['ch_include']
+    ch_exclude = selected_channels['ch_exclude']
+
+    selected_states = states[patient_id]['center_out']
+
+    num_channels = len(eeglabels)
+
+    neural_data = np.zeros((0, num_channels))
+    stimuli = np.zeros((0,))
+
+    save_dict = {}
+    for partition_key, partition_load_func in h5_data.items():
+        h5file = partition_load_func()
+        eeg = h5file.group.eeg()
+        eeg_data = eeg.dataset[:]
+
+        aux = h5file.group.aux()
+        stimuli_data = aux[:, selected_states]
+
+        eeg_data = eeg_data*gain
+        stimuli_data = stimuli_data.astype(int)
+
+        n_channels_include = len(ch_include)
+
+        signals_list = [None] * n_channels_include
+
+        # Iterating across each name in the included channels list.
+        for (ch_ind, ch_name) in enumerate(ch_include):
+            eeg_ind = np.argwhere(eeglabels == ch_name)[0][0]
+            signals_list[ch_ind] = eeg_data[:, eeg_ind]
+
+        # Converting the signals_list to the proper array format.
+        signals = np.squeeze(np.array(signals_list).transpose())
+        
+        # If the signals don't have enough dimensions (only one channel).
+        if n_channels_include == 1:
+            signals = np.expand_dims(signals,1)
+
+        sampling_rate = int(eeg.get_rate())
+
+        # TODO: Finish this to save appropriately
+        save_dict[partition_key] = {
+            'signals': signals,
+            'stimuli': stimuli_data,
+            'sampling_rate': sampling_rate
+        }
+    
+    return save_dict
+
+
+
+

@@ -1,22 +1,24 @@
 patient_id: 'CC01'
 bci_states:
   CC01:
-    center_out: ['StimulusCode', 'CursorX', 'CursorY']
-channel_labelling:
-  channel_selection: 'all'
-  channels:
-    CC01:
-      motor: ['chan66','chan67','chan68','chan69','chan70','chan74','chan75','chan76','chan77','chan78','chan84','chan85','chan86','chan91',
-                                            'chan92','chan93','chan94', 'chan99','chan100','chan101','chan102','chan108','chan109','chan110','chan117','chan118',
-                                            'chan125','chan126']
-      sensory: ['chan71','chan72','chan79','chan80','chan87','chan88','chan95','chan96','chan103','chan104','chan112','chan120','chan128']
-  elim_channels:
-    CC01:
-      channels: ['ainp1','ainp2','ainp3']
-  bad_channels:
-    CC01:
-      channels: []
-  grid_split:
-    CC01: 
-      split_indices: [65]
+    center_out: ['StimulusCode', 'cursorX', 'cursorY', 'Baseline', 'ResultCode']
+gain: 0.25
+data_preprocessing:
+  channel_labelling:
+    channel_selection: 'all'
+    channels:
+      CC01:
+        motor: ['chan66','chan67','chan68','chan69','chan70','chan74','chan75','chan76','chan77','chan78','chan84','chan85','chan86','chan91',
+                                              'chan92','chan93','chan94', 'chan99','chan100','chan101','chan102','chan108','chan109','chan110','chan117','chan118',
+                                              'chan125','chan126']
+        sensory: ['chan71','chan72','chan79','chan80','chan87','chan88','chan95','chan96','chan103','chan104','chan112','chan120','chan128']
+    elim_channels:
+      CC01:
+        channels: ['ainp1','ainp2','ainp3']
+    bad_channels:
+      CC01:
+        channels: []
+    grid_split:
+      CC01: 
+        split_indices: [65]
 
