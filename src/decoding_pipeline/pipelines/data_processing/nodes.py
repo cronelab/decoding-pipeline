@@ -148,7 +148,7 @@ def extract_bci_data(h5_data, selected_channels, electrode_labels, states, patie
         sampling_rate = int(eeg.get_rate())
 
         # TODO: Finish this to save appropriately
-        save_dict[partition_key] = {
+        save_dict[partition_key] = lambda: {
             'signals': signals,
             'stimuli': stimuli_data,
             'sampling_rate': sampling_rate

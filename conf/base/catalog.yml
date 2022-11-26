@@ -24,6 +24,13 @@ state_plots:
     format: png
   layer: reporting
 
+spectrogram_transform_plot:
+  type: matplotlib.MatplotlibWriter
+  filepath: data/08_reporting/CC01/ccCenterOut/transform_plot/spectrogram_transform_plot.png
+  save_args:
+    format: png
+  layer: reporting
+
 center_out_hdf5:
   type: PartitionedDataSet
   dataset: decoding_pipeline.io.hdf5_dataset.HDF5Dataset
@@ -43,11 +50,20 @@ center_out_extracted_pkl:
 selected_channels:
   type: json.JSONDataSet
   filepath: data/03_primary/CC01/ccCenterOut/selected_channels.json
-  layer: primary
+  # layer: primary
 
 prefixed_channels:
   type: json.JSONDataSet
   filepath: data/03_primary/CC01/ccCenterOut/prefixed_channels.json
+  layer: primary
+
+center_out_spectrogram_pkl:
+  type: PartitionedDataSet
+  dataset:
+    type: pickle.PickleDataSet
+    backend: pickle
+  path: data/03_primary/CC01/ccCenterOut/spectrograms
+  filename_suffix: ".pkl"
   layer: primary
 
 

@@ -79,6 +79,6 @@ def create_pipeline(**kwargs) -> Pipeline:
         pipe=channel_labelling_pipeline + data_extraction_pipeline + dataset_metrics_pipeline,
         namespace="data_preprocessing",
         inputs=set(["center_out_hdf5"]),
-        outputs={"prefixed_channels": "prefixed_channels", "center_out_extracted_pkl": "center_out_extracted_pkl", "state_plots": "state_plots"},
+        outputs={"prefixed_channels": "prefixed_channels", "center_out_extracted_pkl": "center_out_extracted_pkl", "state_plots": "state_plots", "selected_channels": "selected_channels"},
         parameters={"params:patient_id": "params:patient_id", "params:gain": "params:gain", "params:bci_states": "params:bci_states"}
     )
