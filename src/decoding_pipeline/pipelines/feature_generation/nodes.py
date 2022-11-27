@@ -3,6 +3,7 @@ This is a boilerplate pipeline 'feature_generation'
 generated using Kedro 0.18.3
 """
 import copy
+from turtle import update
 import numpy as np
 import scipy.signal as signal
 
@@ -229,12 +230,14 @@ def downsample_data_to_spectrogram(partitioned_sxx_data, partitioned_signal_data
         save_dict[partition_sxx_key] = create_closure_func(_downsample_data_to_spectrogram, sxx_data_func, signal_data_func)
     return save_dict
 
-def plot_downsampled_signals(partitioned_sxx_data, partitioned_signal_data):
+def plot_downsampled_signals(partitioned_sxx_data, partitioned_signal_data, partitioned_sxx_std_data):
     save_dict = {}
     for partition_sxx_key, sxx_data_func in partitioned_sxx_data.items():
         signal_data_func = partitioned_signal_data[partition_sxx_key]
+        sxx_std_func = partitioned_sxx_std_data[partition_sxx_key]
 
         sxx_data_dict = sxx_data_func()
+        sxx_std_data_dict = sxx_std_func()
         signal_data_dict = signal_data_func()
 
         stimuli = signal_data_dict['stimuli']
@@ -245,7 +248,9 @@ def plot_downsampled_signals(partitioned_sxx_data, partitioned_signal_data):
         t = sxx_data_dict['t']
         sxx = sxx_data_dict['sxx']
 
-        fig, (ax, ax1, ax2) = plt.subplots(3, figsize=(20,10))
+        sxx_std = sxx_std_data_dict['sxx']
+
+        fig, (ax, ax1, ax2, ax3) = plt.subplots(4, figsize=(20,10))
 
         ax.plot(t_seconds, stimuli[:, 0], color='k', linewidth=1)
         ax.margins(x=0)
@@ -268,11 +273,117 @@ def plot_downsampled_signals(partitioned_sxx_data, partitioned_signal_data):
 
         ax2.set_ylabel('Frequency (Hz)')
         ax2.set_ylim([0, 140])
-        ax2.set_xlabel('Time (s)')
 
-        ax.set_title('Downsampled States, Signals and Spectrogram')
+        ax3.pcolormesh(
+            t,
+            f,
+            sxx_std[:,:,0],
+            # norm=mpl.colors.PowerNorm(gamma=1.0 / 5),
+            cmap="seismic",
+            vmin=-3, 
+            vmax=3
+        #     cmap="YlGnBu"
+        )
+
+        ax3.set_ylabel('Frequency (Hz)')
+        ax3.set_ylim([0, 140])
+
+
+        ax3.set_xlabel('Time (s)')
+
+        ax.set_title('Downsampled States, Signals, Raw Spectrogram and Standardized Spectrogram')
 
         save_dict[f"{partition_sxx_key}.png"] = fig
 
         plt.close()
+    return save_dict
+
+def extract_calibration_statistics(partitioned_calibration_sxx, partitioned_calibration_data, selected_sessions, patient_id):
+    calibration_dict = selected_sessions[patient_id]['calibration']
+
+    # Find all dates that have no session data. By default, all sessions will be included for calibration
+    updated_dict = {}
+    for partition_key in list(partitioned_calibration_sxx.keys()):
+        # TODO: Switch the array based splitting to regex based splitting
+        date = partition_key.split('_')[-2]
+        session = partition_key.split('_')[-1]
+        if date in list(calibration_dict.keys()):
+            continue
+        else:
+            sessions_list = updated_dict.setdefault(date, [])
+            sessions_list.append(session)
+            updated_dict[date] = sessions_list
+    
+    calibration_dict.update(updated_dict)
+
+    stimuli = None
+    save_dict = {}
+    for date_key, sessions_list in calibration_dict.items():
+        intermed_list = []
+        for partition_sxx_key, sxx_data_func in partitioned_calibration_sxx.items():
+            continue_loop = True
+            if date_key in partition_sxx_key and partition_sxx_key.split('_')[-1] in sessions_list:
+                all_stimuli=partitioned_calibration_data[partition_sxx_key]()['stimuli']
+                stimuli=all_stimuli[:, 0]
+
+                # Check to make sure calibration stimuli is not all zeros
+                assert 1 in stimuli, "Stimuli contains all zeros, think about possibly excluding this calibration session"
+
+                continue_loop = False
+            
+            if continue_loop:
+                continue
+
+            data_dict = sxx_data_func()
+
+            sxx = data_dict['sxx']
+
+            sxx = sxx[:, stimuli == 1, :]
+
+            mean = np.mean(sxx, axis=1)[:,np.newaxis,:]
+            std = np.std(sxx, axis=1)[:,np.newaxis,:]
+            sxx_len = sxx.shape[1]
+
+            intermed_list.append({
+                'mean': mean,
+                'std': std,
+                'count': sxx_len
+            })
+        
+        total_len = np.sum([x['count'] for x in intermed_list])
+        fractions_len = [x['count']/total_len for x in intermed_list]
+
+        global_mean = sum([x['mean']*frac for x,frac in zip(intermed_list, fractions_len)])
+        global_std = sum([x['std']*frac for x,frac in zip(intermed_list, fractions_len)])
+
+        save_dict[f'Calibration_statistics_{date_key}'] = {
+            'mean': global_mean,
+            'std': global_std 
+        }
+    
+    return save_dict
+
+def _standardize_spectrogram(sxx_func, stats_func):
+    sxx_dict = sxx_func()
+    stats_dict = stats_func()
+
+    sxx = sxx_dict['sxx']
+    mean_sxx = stats_dict['mean']
+    std_sxx = stats_dict['std']
+
+    sxx_dict['sxx'] = (sxx - mean_sxx)/std_sxx
+
+    return sxx_dict
+
+def standardize_spectrograms(partitioned_sxx, partitioned_statistics):
+    
+    save_dict = {}
+    for partition_sxx_key, sxx_data_func in partitioned_sxx.items():
+        date = partition_sxx_key.split('_')[-2]
+        statistics_key = list(filter(lambda x: x.split('_')[-1] == date, partitioned_statistics.keys()))[0]
+
+        stats_func = partitioned_statistics[statistics_key]
+
+        save_dict[partition_sxx_key] = create_closure_func(_standardize_spectrogram, sxx_data_func, stats_func)
+
     return save_dict

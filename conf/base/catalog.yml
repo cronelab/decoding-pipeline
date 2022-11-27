@@ -98,8 +98,16 @@ prefixed_channels:
 #       compress: 3
 #   path: data/03_primary/CC01/ccCenterOut/downsampled_signals
 #   filename_suffix: ".lz4"
-#   layer: intermediate
+#   layer: primary
 
+calibration_statistics_pkl:
+  type: PartitionedDataSet
+  dataset: 
+    type: pickle.PickleDataSet
+    backend: pickle
+  path: data/03_primary/CC01/ccCenterOut/calibration_statistics
+  filename_suffix: ".pkl"
+  layer: primary
 
 
 

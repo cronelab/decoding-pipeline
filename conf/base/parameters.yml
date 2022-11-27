@@ -1,7 +1,10 @@
 patient_id: 'CC01'
+current_experiment: 'center_out'
+current_calibration: 'calibration'
 bci_states:
   CC01:
     center_out: ['StimulusCode', 'cursorX', 'cursorY', 'Baseline', 'ResultCode']
+    calibration: ['StimulusCode']
 gain: 0.25
 data_preprocessing:
   channel_labelling:
@@ -35,3 +38,8 @@ sessions:
         '20221104': ['S09', 'S10']
         '20221108': ['S08', 'S09']
         '20221111': ['S07', 'S08']
+    calibration:
+      '20221027': ['S01', 'S02', 'S03']
+      '20221104': ['S01', 'S02']
+      '20221108': ['S01', 'S02']
+      '20221111': ['S01', 'S02']

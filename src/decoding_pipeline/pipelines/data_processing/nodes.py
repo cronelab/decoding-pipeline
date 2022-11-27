@@ -94,14 +94,14 @@ def prefix_single_channel_info(channels, patient_id, grid_split):
                 'ch_suffix_order': ch_suffix_order 
             }
 
-def extract_bci_data(h5_data, selected_channels, electrode_labels, states, patient_id, gain):
+def extract_bci_data(h5_data, selected_channels, electrode_labels, states, patient_id, gain, current_experiment):
     eeglabels = electrode_labels['eeglabels']
     auxlabels = electrode_labels['auxlabels']
 
     ch_include = selected_channels['ch_include']
     ch_exclude = selected_channels['ch_exclude']
 
-    selected_states = states[patient_id]['center_out']
+    selected_states = states[patient_id][current_experiment]
 
     num_channels = len(eeglabels)
 
@@ -166,8 +166,8 @@ def extract_bci_data(h5_data, selected_channels, electrode_labels, states, patie
     
     return save_dict
 
-def plot_bci_states(partitioned_data, states, patient_id):
-    state_names = states[patient_id]['center_out']
+def plot_bci_states(partitioned_data, states, patient_id, current_experiment):
+    state_names = states[patient_id][current_experiment]
 
     save_dict = {}
     for partition_key, partition_load_func in partitioned_data.items():

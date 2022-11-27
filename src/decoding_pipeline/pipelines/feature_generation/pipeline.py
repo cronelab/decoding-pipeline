@@ -3,7 +3,7 @@ This is a boilerplate pipeline 'feature_generation'
 generated using Kedro 0.18.3
 """
 
-from .nodes import car_filter, generate_spectrogram, plot_spectrogram_transform_figure, align_and_warp_spectrogram, downsample_data_to_spectrogram, plot_downsampled_signals
+from .nodes import car_filter, generate_spectrogram, plot_spectrogram_transform_figure, align_and_warp_spectrogram, downsample_data_to_spectrogram, plot_downsampled_signals, extract_calibration_statistics, standardize_spectrograms
 
 from kedro.pipeline import Pipeline, node
 from kedro.pipeline.modular_pipeline import pipeline
@@ -60,11 +60,30 @@ def create_pipeline(**kwargs) -> Pipeline:
             name="downsample_data_to_spectrogram_node"
         ),
         node(
+            func=downsample_data_to_spectrogram,
+            inputs=["calibration_spectrogram_warped_pkl", "calibration_car_signals_dict"],
+            outputs="calibration_downsampled_pkl",
+            name="downsample_calibration_data_to_spectrogram"
+        ),
+        
+        node(
+            func=extract_calibration_statistics,
+            inputs=["calibration_spectrogram_warped_pkl", "calibration_downsampled_pkl", "params:sessions", "params:patient_id"],
+            outputs="calibration_statistics_pkl",
+            name="extract_calibration_statistics_node"
+        ),
+        node(
+            func=standardize_spectrograms,
+            inputs=["center_out_spectrogram_warped_pkl", "calibration_statistics_pkl"],
+            outputs="center_out_spectrogram_std_pkl",
+            name="standardize_spectrogram_node"
+        ),
+        node(
             func=plot_downsampled_signals,
-            inputs=["center_out_spectrogram_warped_pkl", "center_out_downsampled_pkl"],
+            inputs=["center_out_spectrogram_warped_pkl", "center_out_downsampled_pkl", "center_out_spectrogram_std_pkl"],
             outputs="downsampled_data_plots",
             name="plot_downsampled_signals_node"
-        )
+        ),
     ])
 
     return data_preprocessing_pipeline

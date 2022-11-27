@@ -49,13 +49,13 @@ def create_pipeline(**kwargs) -> Pipeline:
         ),
         node(
             func=extract_bci_data,
-            inputs=["center_out_hdf5", "selected_channels", "electrode_labels", "params:bci_states", "params:patient_id", "params:gain"],
+            inputs=["center_out_hdf5", "selected_channels", "electrode_labels", "params:bci_states", "params:patient_id", "params:gain", "params:current_experiment"],
             outputs="center_out_extracted_pkl",
             name="extract_bci_data_node"
         ),
         node(
             func=extract_bci_data,
-            inputs=["calibration_hdf5", "selected_channels", "electrode_labels", "params:bci_states", "params:patient_id", "params:gain"],
+            inputs=["calibration_hdf5", "selected_channels", "electrode_labels", "params:bci_states", "params:patient_id", "params:gain", "params:current_calibration"],
             outputs="calibration_extracted_pkl",
             name="extract_calibration_data_node"
         ),
@@ -63,12 +63,12 @@ def create_pipeline(**kwargs) -> Pipeline:
     namespace="data_extraction",
     inputs=set(["calibration_hdf5", "center_out_hdf5", "selected_channels"]),
     outputs=set(["center_out_extracted_pkl", "calibration_extracted_pkl"]),
-    parameters={"params:patient_id": "params:patient_id", "params:gain": "params:gain", "params:bci_states": "params:bci_states"})
+    parameters={"params:patient_id": "params:patient_id", "params:gain": "params:gain", "params:bci_states": "params:bci_states", "params:current_experiment": "params:current_experiment", "params:current_calibration": "params:current_calibration"})
 
     dataset_metrics_pipeline = pipeline([
         node(
             func=plot_bci_states,
-            inputs=["center_out_extracted_pkl", "params:bci_states", "params:patient_id"],
+            inputs=["center_out_extracted_pkl", "params:bci_states", "params:patient_id", "params:current_experiment"],
             outputs="state_plots",
             name="plot_bci_states_node"
             
@@ -77,7 +77,7 @@ def create_pipeline(**kwargs) -> Pipeline:
     namespace="dataset_metrics",
     inputs=set(["center_out_extracted_pkl"]),
     outputs="state_plots",
-    parameters={"params:patient_id": "params:patient_id", "params:bci_states": "params:bci_states"})
+    parameters={"params:patient_id": "params:patient_id", "params:bci_states": "params:bci_states", "params:current_experiment": "params:current_experiment"})
 
     # return channel_labelling_pipeline + data_extraction_pipeline
 
@@ -86,5 +86,5 @@ def create_pipeline(**kwargs) -> Pipeline:
         namespace="data_preprocessing",
         inputs=set(["calibration_hdf5", "center_out_hdf5"]),
         outputs={"prefixed_channels": "prefixed_channels", "center_out_extracted_pkl": "center_out_extracted_pkl", "calibration_extracted_pkl": "calibration_extracted_pkl", "state_plots": "state_plots", "selected_channels": "selected_channels"},
-        parameters={"params:patient_id": "params:patient_id", "params:gain": "params:gain", "params:bci_states": "params:bci_states"}
+        parameters={"params:patient_id": "params:patient_id", "params:gain": "params:gain", "params:bci_states": "params:bci_states", "params:current_experiment": "params:current_experiment", "params:current_calibration": "params:current_calibration"}
     )
