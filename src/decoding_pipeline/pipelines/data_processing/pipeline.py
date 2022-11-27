@@ -52,11 +52,17 @@ def create_pipeline(**kwargs) -> Pipeline:
             inputs=["center_out_hdf5", "selected_channels", "electrode_labels", "params:bci_states", "params:patient_id", "params:gain"],
             outputs="center_out_extracted_pkl",
             name="extract_bci_data_node"
-        )
+        ),
+        node(
+            func=extract_bci_data,
+            inputs=["calibration_hdf5", "selected_channels", "electrode_labels", "params:bci_states", "params:patient_id", "params:gain"],
+            outputs="calibration_extracted_pkl",
+            name="extract_calibration_data_node"
+        ),
     ],
     namespace="data_extraction",
-    inputs=set(["center_out_hdf5", "selected_channels"]),
-    outputs="center_out_extracted_pkl",
+    inputs=set(["calibration_hdf5", "center_out_hdf5", "selected_channels"]),
+    outputs=set(["center_out_extracted_pkl", "calibration_extracted_pkl"]),
     parameters={"params:patient_id": "params:patient_id", "params:gain": "params:gain", "params:bci_states": "params:bci_states"})
 
     dataset_metrics_pipeline = pipeline([
@@ -78,7 +84,7 @@ def create_pipeline(**kwargs) -> Pipeline:
     return pipeline(
         pipe=channel_labelling_pipeline + data_extraction_pipeline + dataset_metrics_pipeline,
         namespace="data_preprocessing",
-        inputs=set(["center_out_hdf5"]),
-        outputs={"prefixed_channels": "prefixed_channels", "center_out_extracted_pkl": "center_out_extracted_pkl", "state_plots": "state_plots", "selected_channels": "selected_channels"},
+        inputs=set(["calibration_hdf5", "center_out_hdf5"]),
+        outputs={"prefixed_channels": "prefixed_channels", "center_out_extracted_pkl": "center_out_extracted_pkl", "calibration_extracted_pkl": "calibration_extracted_pkl", "state_plots": "state_plots", "selected_channels": "selected_channels"},
         parameters={"params:patient_id": "params:patient_id", "params:gain": "params:gain", "params:bci_states": "params:bci_states"}
     )

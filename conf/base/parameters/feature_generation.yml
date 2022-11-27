@@ -13,5 +13,6 @@ spectrogram_params:
   window_length: 256
   shift: 50
   logarithm: True
+  window_placement: 'causal'
 
   

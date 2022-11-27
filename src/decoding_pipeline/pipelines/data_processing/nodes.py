@@ -8,6 +8,8 @@ from typing import Dict
 import numpy as np
 import matplotlib.pyplot as plt
 
+from scripts.utility_scripts import create_closure
+
 
 
 def _import_electrode_information(h5file):
@@ -147,12 +149,20 @@ def extract_bci_data(h5_data, selected_channels, electrode_labels, states, patie
 
         sampling_rate = int(eeg.get_rate())
 
+        N_samples      = len(stimuli_data)
+        t_samples      = np.arange(0,N_samples)
+        t_seconds      = t_samples/eeg.get_rate()
+
+        # print(signals)
+
         # TODO: Finish this to save appropriately
-        save_dict[partition_key] = lambda: {
+        save_dict[partition_key] = create_closure({
             'signals': signals,
             'stimuli': stimuli_data,
-            'sampling_rate': sampling_rate
-        }
+            'sampling_rate': sampling_rate,
+            't_samples': t_samples,
+            't_seconds': t_seconds
+        })
     
     return save_dict
 
