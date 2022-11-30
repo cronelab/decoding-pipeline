@@ -356,10 +356,10 @@ def extract_calibration_statistics(partitioned_calibration_sxx, partitioned_cali
         global_mean = sum([x['mean']*frac for x,frac in zip(intermed_list, fractions_len)])
         global_std = sum([x['std']*frac for x,frac in zip(intermed_list, fractions_len)])
 
-        save_dict[f'Calibration_statistics_{date_key}'] = {
+        save_dict[f'Calibration_statistics_{date_key}'] = create_closure({
             'mean': global_mean,
             'std': global_std 
-        }
+        })
     
     return save_dict
 
@@ -385,5 +385,59 @@ def standardize_spectrograms(partitioned_sxx, partitioned_statistics):
         stats_func = partitioned_statistics[statistics_key]
 
         save_dict[partition_sxx_key] = create_closure_func(_standardize_spectrogram, sxx_data_func, stats_func)
+
+    return save_dict
+
+def _extract_state_information(stimuli):
+    unique_states = np.unique(stimuli)
+
+    state_information_dict = {}
+    for state in unique_states:
+        state_information_dict[int(state)] = {}
+        idx_stimuli = np.where(stimuli == state)[0]
+
+        temp_diff_arr = np.diff(idx_stimuli)
+        temp_diff_arr = np.insert(temp_diff_arr, 0, 1)
+
+        disjoint_idx = np.where(temp_diff_arr>1)[0]
+        unique_val_idx = np.split(idx_stimuli, disjoint_idx)
+
+        state_information_dict[int(state)]['unique_val_idx'] = unique_val_idx
+        state_information_dict[int(state)]['start_end_idx'] = [(x[0], x[-1]) for x in unique_val_idx]
+        state_information_dict[int(state)]['num_steps'] = [len(x) for x in unique_val_idx]
+    return state_information_dict
+
+def _extract_center_out_indices(stimuli, states_list, stimulus_state, reached_state):
+    stimulus_code_info = _extract_state_information(stimuli[:, np.where(np.array(states_list) == stimulus_state)[0]].flatten())
+    result_code_info = _extract_state_information(stimuli[:, np.where(np.array(states_list) == reached_state)[0]].flatten())
+
+    state_dict = {}
+    for state in stimulus_code_info.keys():
+        state_dict[state] = {}
+        stimulus_start_end_list = stimulus_code_info[state]['start_end_idx']
+        result_start_end_list = result_code_info[state]['start_end_idx']
+
+        if state == 0:
+            stimulus_start_end_list = stimulus_start_end_list[1:-1]
+            result_start_end_list = result_start_end_list[1:-1]
+
+        state_dict[state]['start_end_idx'] = [(x[0], y[0]) for x, y in zip(stimulus_start_end_list, result_start_end_list)]
+        state_dict[state]['unique_val_idx'] = [np.arange(x[0], x[1] + 1) for x in state_dict[state]['start_end_idx']]
+        state_dict[state]['num_steps'] = [len(x) for x in state_dict[state]['unique_val_idx']]
+        
+    return state_dict
+
+def extract_center_out_state_dict(partitioned_data, bci_states, state_information, patient_id):
+    states_list = np.array(bci_states[patient_id]['center_out'])
+    stimulus_state = state_information[patient_id]['center_out']['stimulus_state']
+    reached_state = state_information[patient_id]['center_out']['reached_state']
+
+    save_dict = {}
+    for partition_key, partition_func in partitioned_data.items():
+        data_dict = partition_func()
+
+        stimuli = data_dict['stimuli']
+
+        save_dict[partition_key] = create_closure(_extract_center_out_indices(stimuli, states_list, stimulus_state, reached_state))
 
     return save_dict

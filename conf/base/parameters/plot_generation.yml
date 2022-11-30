@@ -1,0 +1,15 @@
+# This is a boilerplate parameters config generated for pipeline 'plot_generation'
+# using Kedro 0.18.3.
+#
+# Documentation for this file format can be found in "Parameters"
+# Link: https://kedro.readthedocs.io/en/0.18.3/kedro_project_setup/configuration.html#parameters
+
+plot_sxx_params:
+  fig_width: 20
+  fig_height: 20
+  sharex: True
+  sharey: True
+  vmin: -1
+  vmax: 1
+  pre_stimulus_time: 0.3
+  post_stimulus_time: 2

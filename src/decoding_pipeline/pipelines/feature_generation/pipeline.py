@@ -3,7 +3,7 @@ This is a boilerplate pipeline 'feature_generation'
 generated using Kedro 0.18.3
 """
 
-from .nodes import car_filter, generate_spectrogram, plot_spectrogram_transform_figure, align_and_warp_spectrogram, downsample_data_to_spectrogram, plot_downsampled_signals, extract_calibration_statistics, standardize_spectrograms
+from .nodes import car_filter, extract_center_out_state_dict, generate_spectrogram, plot_spectrogram_transform_figure, align_and_warp_spectrogram, downsample_data_to_spectrogram, plot_downsampled_signals, extract_calibration_statistics, standardize_spectrograms, extract_center_out_state_dict
 
 from kedro.pipeline import Pipeline, node
 from kedro.pipeline.modular_pipeline import pipeline
@@ -84,6 +84,12 @@ def create_pipeline(**kwargs) -> Pipeline:
             outputs="downsampled_data_plots",
             name="plot_downsampled_signals_node"
         ),
+        node(
+            func=extract_center_out_state_dict,
+            inputs=["center_out_downsampled_pkl", "params:bci_states", "params:state_information", "params:patient_id"],
+            outputs="center_out_curated_states_pkl",
+            name="extract_center_out_state_dict_node"
+        )
     ])
 
     return data_preprocessing_pipeline
