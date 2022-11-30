@@ -122,9 +122,20 @@ def _plot_average_sxx(current_experiment, task_paradigm, state, sxx_data, ch_suf
     sharey = plot_sxx_params['sharey']
     vmin = plot_sxx_params['vmin']
     vmax = plot_sxx_params['vmax']
+    f_min = plot_sxx_params['f_min']
+    f_max = plot_sxx_params['f_max']
+    
+    f_min_idx = 0
+    if f_min:
+        f_min_idx = np.argmin(np.abs(f_samples - f_min))
+
+    f_max_idx = f_samples.shape[0]
+    if f_max:
+        f_max_idx = np.argmin(np.abs(f_samples - f_max))
     
     sel_grid = None
     sel_suffix_key = None
+
     for cur_grid in grid_layout:
         if np.array(cur_grid).flatten()[0][0] == ch_suffix_key:
             sel_suffix_key = ch_suffix_key
@@ -143,17 +154,17 @@ def _plot_average_sxx(current_experiment, task_paradigm, state, sxx_data, ch_suf
         col = np.where(sel_grid == ch)[1][0]
 
         if grid_rows == 1:
-            im = axs[col].pcolormesh(t_samples, f_samples, cur_mean_sxx[:,:,ch_ind], cmap = 'seismic', vmin = vmin, vmax = vmax);
+            im = axs[col].pcolormesh(t_samples, f_samples[f_min_idx:f_max_idx], cur_mean_sxx[f_min_idx:f_max_idx,:,ch_ind], cmap = 'seismic', vmin = vmin, vmax = vmax);
             axs[col].set_title(ch)
             axs[col].axvline(x=0, color = 'k')
 
         elif grid_cols == 1:
-            im = axs[row].pcolormesh(t_samples, f_samples, cur_mean_sxx[:,:,ch_ind], cmap = 'seismic', vmin = vmin, vmax = vmax);
+            im = axs[row].pcolormesh(t_samples, f_samples[f_min_idx:f_max_idx], cur_mean_sxx[f_min_idx:f_max_idx,:,ch_ind], cmap = 'seismic', vmin = vmin, vmax = vmax);
             axs[row].set_title(ch)
             axs[row].axvline(x=0, color = 'k')
 
         else:
-            im = axs[row,col].pcolormesh(t_samples, f_samples, cur_mean_sxx[:,:,ch_ind], cmap = 'seismic', vmin= vmin, vmax= vmax);
+            im = axs[row,col].pcolormesh(t_samples, f_samples[f_min_idx:f_max_idx], cur_mean_sxx[f_min_idx:f_max_idx,:,ch_ind], cmap = 'seismic', vmin= vmin, vmax= vmax);
             axs[row,col].set_title(ch)
             axs[row,col].axvline(x=0, color = 'k')
 
@@ -164,15 +175,20 @@ def _plot_average_sxx(current_experiment, task_paradigm, state, sxx_data, ch_suf
     
     return fig
 
-def plot_average_sxx(prefixed_channels, mean_dict_total, current_experiment, plot_sxx_params, grid_layout):
+def plot_average_sxx(prefixed_channels, mean_dict_total, current_experiment, plot_sxx_params, grid_layout, patient_id):
+
     ch_suffix_order = prefixed_channels['ch_suffix_order']
     
+    patient_grid = grid_layout[patient_id]
+
     save_dict = {}
     for task_paradigm, state_data in mean_dict_total.items():
         for state, sxx_data in state_data.items():
             for ch_suffix_key in ch_suffix_order.keys():
-                fig = _plot_average_sxx(current_experiment, task_paradigm, state, sxx_data, ch_suffix_key, ch_suffix_order, plot_sxx_params, grid_layout)
+                if ch_suffix_key == 'A':
+                    continue
+                fig = _plot_average_sxx(current_experiment, task_paradigm, state, sxx_data, ch_suffix_key, ch_suffix_order, plot_sxx_params, patient_grid)
                 save_dict[f"{current_experiment}_{task_paradigm}_{ch_suffix_key}_state_{state}.png"] = fig
-                plt.close
+                plt.close()
                 
     return save_dict

@@ -13,3 +13,5 @@ plot_sxx_params:
   vmax: 1
   pre_stimulus_time: 0.3
   post_stimulus_time: 2
+  f_min: 0
+  f_max: 200
