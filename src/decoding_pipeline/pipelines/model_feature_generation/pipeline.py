@@ -14,7 +14,7 @@ def create_pipeline(**kwargs) -> Pipeline:
         node(
             func=generate_model_windowed_sxx_data,
             inputs=["center_out_spectrogram_std_pkl", "center_out_curated_states_pkl", "params:sessions", "params:model_data_params", "params:current_experiment", "params:patient_id"],
-            outputs=["center_out_windowed_spectrogram_std_pkl", "center_out_windowed_spectrogram_indices"],
+            outputs=["center_out_model_spectrogram_std_pkl", "center_out_model_spectrogram_indices"],
             name="generate_model_windowed_sxx_data_node"
         ),
     ])
