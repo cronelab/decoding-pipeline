@@ -150,18 +150,14 @@ center_out_spectrogram_std_pkl:
 
 center_out_model_spectrogram_std_pkl:
   type: PartitionedDataSet
-  dataset:
-    type: pickle.PickleDataSet
-    backend: pickle
+  dataset: decoding_pipeline.io.numpy_dataset.NPDataset
   path: data/05_model_input/CC01/ccCenterOut/windowed_spectrograms
-  filename_suffix: ".pkl"
+  filename_suffix: ".npy"
   layer: model_input
 
 center_out_model_spectrogram_indices:
   type: PartitionedDataSet
-  dataset:
-    type: pickle.PickleDataSet
-    backend: pickle
+  dataset: decoding_pipeline.io.dat_dataset.DATDataset
   path: data/05_model_input/CC01/ccCenterOut/windowed_spectrogram_indices
   filename_suffix: ".pkl"
   layer: model_input
