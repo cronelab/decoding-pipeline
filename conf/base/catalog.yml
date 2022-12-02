@@ -152,20 +152,16 @@ center_out_windowed_spectrogram_std_pkl:
   type: PartitionedDataSet
   dataset:
     type: pickle.PickleDataSet
-    backend: joblib
-    save_args:
-      compress: 3
+    backend: pickle
   path: data/05_model_input/CC01/ccCenterOut/windowed_spectrograms
-  filename_suffix: ".lz4"
-  layer: primary
+  filename_suffix: ".pkl"
+  layer: model_input
 
 center_out_windowed_spectrogram_indices:
   type: PartitionedDataSet
   dataset:
     type: pickle.PickleDataSet
-    backend: joblib
-    save_args:
-      compress: 3
+    backend: pickle
   path: data/05_model_input/CC01/ccCenterOut/windowed_spectrogram_indices
-  filename_suffix: ".lz4"
-  layer: primary
+  filename_suffix: ".pkl"
+  layer: model_input

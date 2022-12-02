@@ -74,6 +74,7 @@ model_data_params:
   shift: 1 # samples
   pre_stimulus_time: 0.5 # seconds
   post_completion_time: 0 # seconds
+  precision: 'float16'
 
   center_out:
     sel_split_type: 'leave_session_out' # leave_day_out, leave_session_out, leave_trial_out

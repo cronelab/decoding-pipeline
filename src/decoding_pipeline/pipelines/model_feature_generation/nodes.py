@@ -7,17 +7,18 @@ from scripts.utility_scripts import create_closure, create_closure_func
 import numpy as np
 from numpy.lib.stride_tricks import sliding_window_view
 
-def _window_spectrogram(data_func, indices, shift, window_size):
+def _window_spectrogram(data_func, indices, shift, window_size, precision):
     sxx_data_dict = data_func()
     
     sxx = sxx_data_dict['sxx']
     
-    return np.moveaxis(sliding_window_view(sxx[:, indices, :][:, ::shift, :], window_shape=window_size, axis=1), [0, -1], [1, -2])
+    return np.moveaxis(sliding_window_view(sxx[:, indices, :][:, ::shift, :], window_shape=window_size, axis=1), [0, -1], [1, -2]).astype(precision)
     
 
 def generate_model_windowed_sxx_data(spectrogram_dict, curated_states_partition, sessions, model_data_params, current_experiment, patient_id):
     pre_stimulus_time = model_data_params['pre_stimulus_time']
     post_completion_time = model_data_params['post_completion_time']
+    precision = model_data_params['precision']
 
     window_size = model_data_params['window_size']
     shift = model_data_params['shift']
@@ -58,7 +59,7 @@ def generate_model_windowed_sxx_data(spectrogram_dict, curated_states_partition,
                     trial_idx_list = []
                     local_trial_idx_list = []
                     for trial_idx, indices in enumerate(metadata_dict['unique_val_idx']):
-                        model_data_dict[f"{session_type}_{date}_{session}_T{trial_idx}_state{state}"] = create_closure_func(_window_spectrogram, sxx_partition_func, indices, shift, window_size)
+                        model_data_dict[f"{session_type}_{date}_{session}_T{trial_idx}_state{state}"] = create_closure_func(_window_spectrogram, sxx_partition_func, indices, shift, window_size, precision)
                         
                         trial_idx_list.append(global_trial_idx)
                         global_trial_idx += 1
