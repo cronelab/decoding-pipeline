@@ -31,46 +31,46 @@ calibration_hdf5:
   filename_suffix: ".hdf5"
   # layer: raw
 
-average_spectrogram_plots:
-  type: matplotlib.MatplotlibWriter
-  filepath: data/08_reporting/CC01/ccCenterOut/average_spectrogram_plots
-  save_args:
-    format: png
-  layer: reporting
+# average_spectrogram_plots:
+#   type: matplotlib.MatplotlibWriter
+#   filepath: data/08_reporting/CC01/ccCenterOut/average_spectrogram_plots
+#   save_args:
+#     format: png
+#   layer: reporting
 
-center_out_mean_spectrogram_dict_pkl:
-  type: pickle.PickleDataSet
-  filepath: data/03_primary/center_out_mean_spectrogram_dict.pkl
-  backend: pickle
-  layer: primary
+# center_out_mean_spectrogram_dict_pkl:
+#   type: pickle.PickleDataSet
+#   filepath: data/03_primary/center_out_mean_spectrogram_dict.pkl
+#   backend: pickle
+  # layer: primary
 
-state_plots:
-  type: matplotlib.MatplotlibWriter
-  filepath: data/08_reporting/CC01/ccCenterOut/state_plots
-  save_args:
-    format: png
-  layer: reporting
+# state_plots:
+#   type: matplotlib.MatplotlibWriter
+#   filepath: data/08_reporting/CC01/ccCenterOut/state_plots
+#   save_args:
+#     format: png
+  # layer: reporting
 
-spectrogram_transform_plot:
-  type: matplotlib.MatplotlibWriter
-  filepath: data/08_reporting/CC01/ccCenterOut/transform_plot/spectrogram_transform_plot.png
-  save_args:
-    format: png
-  layer: reporting
+# spectrogram_transform_plot:
+#   type: matplotlib.MatplotlibWriter
+#   filepath: data/08_reporting/CC01/ccCenterOut/transform_plot/spectrogram_transform_plot.png
+#   save_args:
+#     format: png
+  # layer: reporting
 
-downsampled_data_plots:
-  type: matplotlib.MatplotlibWriter
-  filepath: data/08_reporting/CC01/ccCenterOut/downsampled_data_plots
-  save_args:
-    format: png
-  layer: reporting
+# downsampled_data_plots:
+#   type: matplotlib.MatplotlibWriter
+#   filepath: data/08_reporting/CC01/ccCenterOut/downsampled_data_plots
+#   save_args:
+#     format: png
+  # layer: reporting
 
-trajectory_plots:
-  type: matplotlib.MatplotlibWriter
-  filepath: data/08_reporting/CC01/ccCenterOut/trajectory_plots
-  save_args:
-    format: png
-  layer: reporting
+# trajectory_plots:
+#   type: matplotlib.MatplotlibWriter
+#   filepath: data/08_reporting/CC01/ccCenterOut/trajectory_plots
+#   save_args:
+#     format: png
+  # layer: reporting
 
 center_out_curated_states_pkl:
   type: PartitionedDataSet
@@ -83,59 +83,59 @@ center_out_curated_states_pkl:
   filename_suffix: ".lz4"
   layer: primary
 
-center_out_extracted_pkl:
-  type: PartitionedDataSet
-  dataset: 
-    type: pickle.PickleDataSet
-    backend: joblib
-    save_args:
-      compress: 3
-  path: data/02_intermediate/CC01/ccCenterOut
-  filename_suffix: ".lz4"
-  layer: intermediate
+# center_out_extracted_pkl:
+#   type: PartitionedDataSet
+#   dataset: 
+#     type: pickle.PickleDataSet
+#     backend: joblib
+#     save_args:
+#       compress: 3
+#   path: data/02_intermediate/CC01/ccCenterOut
+#   filename_suffix: ".lz4"
+#   layer: intermediate
 
-selected_channels:
-  type: json.JSONDataSet
-  filepath: data/03_primary/CC01/ccCenterOut/selected_channels.json
+# selected_channels:
+#   type: json.JSONDataSet
+#   filepath: data/03_primary/CC01/ccCenterOut/selected_channels.json
+#   # layer: primary
+
+# prefixed_channels:
+#   type: json.JSONDataSet
+#   filepath: data/03_primary/CC01/ccCenterOut/prefixed_channels.json
   # layer: primary
 
-prefixed_channels:
-  type: json.JSONDataSet
-  filepath: data/03_primary/CC01/ccCenterOut/prefixed_channels.json
-  layer: primary
+# center_out_spectrogram_pkl:
+#   type: PartitionedDataSet
+#   dataset:
+#     type: pickle.PickleDataSet
+#     backend: joblib
+#     save_args:
+#       compress: 3
+#     # load_args:
+#     #   compression: lz4
+#   path: data/03_primary/CC01/ccCenterOut/spectrograms
+#   filename_suffix: ".lz4"
+#   layer: primary
 
-center_out_spectrogram_pkl:
-  type: PartitionedDataSet
-  dataset:
-    type: pickle.PickleDataSet
-    backend: joblib
-    save_args:
-      compress: 3
-    # load_args:
-    #   compression: lz4
-  path: data/03_primary/CC01/ccCenterOut/spectrograms
-  filename_suffix: ".lz4"
-  layer: primary
+# center_out_downsampled_pkl:
+#   type: PartitionedDataSet
+#   dataset: 
+#     type: pickle.PickleDataSet
+#     backend: joblib
+#     save_args:
+#       compress: 3
+#   path: data/03_primary/CC01/ccCenterOut/downsampled_signals
+#   filename_suffix: ".lz4"
+#   layer: primary
 
-center_out_downsampled_pkl:
-  type: PartitionedDataSet
-  dataset: 
-    type: pickle.PickleDataSet
-    backend: joblib
-    save_args:
-      compress: 3
-  path: data/03_primary/CC01/ccCenterOut/downsampled_signals
-  filename_suffix: ".lz4"
-  layer: primary
-
-calibration_statistics_pkl:
-  type: PartitionedDataSet
-  dataset: 
-    type: pickle.PickleDataSet
-    backend: pickle
-  path: data/03_primary/CC01/ccCenterOut/calibration_statistics
-  filename_suffix: ".pkl"
-  layer: primary
+# calibration_statistics_pkl:
+#   type: PartitionedDataSet
+#   dataset: 
+#     type: pickle.PickleDataSet
+#     backend: pickle
+#   path: data/03_primary/CC01/ccCenterOut/calibration_statistics
+#   filename_suffix: ".pkl"
+#   layer: primary
 
 center_out_spectrogram_std_pkl:
   type: PartitionedDataSet
@@ -150,14 +150,18 @@ center_out_spectrogram_std_pkl:
 
 center_out_model_spectrogram_std_pkl:
   type: PartitionedDataSet
-  dataset: decoding_pipeline.io.numpy_dataset.NPDataset
+  dataset:
+    type: pickle.PickleDataSet
+    backend: pickle
   path: data/05_model_input/CC01/ccCenterOut/windowed_spectrograms
-  filename_suffix: ".npy"
+  filename_suffix: ".pkl"
   layer: model_input
 
 center_out_model_spectrogram_indices:
   type: PartitionedDataSet
-  dataset: decoding_pipeline.io.dat_dataset.DATDataset
+  dataset:
+    type: pickle.PickleDataSet
+    backend: pickle
   path: data/05_model_input/CC01/ccCenterOut/windowed_spectrogram_indices
   filename_suffix: ".pkl"
   layer: model_input
