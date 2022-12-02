@@ -3,7 +3,6 @@ This is a boilerplate pipeline 'feature_generation'
 generated using Kedro 0.18.3
 """
 import copy
-from turtle import update
 import numpy as np
 import scipy.signal as signal
 
