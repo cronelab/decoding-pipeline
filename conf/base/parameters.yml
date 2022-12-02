@@ -68,3 +68,26 @@ grid_layout:
      ["A17", "A18", "A19", "A20", "A21", "A22", "A23", "A24"],
      ["A9", "A10", "A11", "A12", "A13", "A14", "A15", "A16"],
      ["A1", "A2", "A3", "A4", "A5", "A6", "A7", "A8"]]]
+
+model_data_params:
+  window_size: 10 # samples
+  shift: 1 # samples
+  pre_stimulus_time: 0.5 # seconds
+  post_completion_time: 0 # seconds
+
+  center_out:
+    sel_split_type: 'leave_session_out' # leave_day_out, leave_session_out, leave_trial_out
+    sel_session_type: 'overt'
+    split_types:
+      leave_day_out:
+        leave_out: 1
+        randomized: True
+        random_seed: 1234
+      leave_session_out:
+        leave_out: 5
+        randomized: True
+        random_seed: 1234
+      leave_trial_out:
+        leave_out: 20
+        randomized: True
+        random_seed: 1234

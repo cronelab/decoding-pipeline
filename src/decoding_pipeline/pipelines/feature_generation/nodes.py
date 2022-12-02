@@ -407,7 +407,7 @@ def _extract_state_information(stimuli):
         state_information_dict[int(state)]['num_steps'] = [len(x) for x in unique_val_idx]
     return state_information_dict
 
-def _extract_center_out_indices(stimuli, states_list, stimulus_state, reached_state):
+def _extract_center_out_indices(stimuli, states_list, stimulus_state, reached_state, sampling_rate):
     stimulus_code_info = _extract_state_information(stimuli[:, np.where(np.array(states_list) == stimulus_state)[0]].flatten())
     result_code_info = _extract_state_information(stimuli[:, np.where(np.array(states_list) == reached_state)[0]].flatten())
 
@@ -424,6 +424,7 @@ def _extract_center_out_indices(stimuli, states_list, stimulus_state, reached_st
         state_dict[state]['start_end_idx'] = [(x[0], y[0]) for x, y in zip(stimulus_start_end_list, result_start_end_list)]
         state_dict[state]['unique_val_idx'] = [np.arange(x[0], x[1] + 1) for x in state_dict[state]['start_end_idx']]
         state_dict[state]['num_steps'] = [len(x) for x in state_dict[state]['unique_val_idx']]
+        state_dict[state]['sampling_rate'] = sampling_rate
         
     return state_dict
 
@@ -437,7 +438,8 @@ def extract_center_out_state_dict(partitioned_data, bci_states, state_informatio
         data_dict = partition_func()
 
         stimuli = data_dict['stimuli']
+        sampling_rate = data_dict['sampling_rate']
 
-        save_dict[partition_key] = create_closure(_extract_center_out_indices(stimuli, states_list, stimulus_state, reached_state))
+        save_dict[partition_key] = create_closure(_extract_center_out_indices(stimuli, states_list, stimulus_state, reached_state, sampling_rate))
 
     return save_dict
