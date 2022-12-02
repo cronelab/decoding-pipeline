@@ -10,7 +10,10 @@ import matplotlib.pyplot as plt
 
 from scripts.utility_scripts import create_closure
 
-
+def remove_prefix(word, prefix):
+    if word.startswith(prefix):
+        word_new = word[len(prefix):]
+    return word_new
 
 def _import_electrode_information(h5file):
     eeg = h5file.group.eeg()
@@ -77,22 +80,21 @@ def elim_single_channel_labels(channels, patient_id, ch_bad_params, ch_elim_para
 def prefix_single_channel_info(channels, patient_id, grid_split):
     ch_include = channels['ch_include']
 
-    match patient_id:
-        case 'CC01':
-            split_index = grid_split[patient_id]['split_indices'][0]
-            split_channels = ['A' + ch.removeprefix('chan') if int(ch.removeprefix('chan')) < split_index else 'B' + ch.removeprefix('chan') for ch in ch_include]
+    if patient_id == 'CC01':
+        split_index = grid_split[patient_id]['split_indices'][0]
+        split_channels = ['A' + remove_prefix(ch, 'chan') if int(remove_prefix(ch, 'chan')) < split_index else 'B' + remove_prefix(ch, 'chan') for ch in ch_include]
 
-            # TODO: In the future, change this to regex to match the numbers
-            ch_suffixes_unique = np.unique([ch[0] for ch in split_channels])
+        # TODO: In the future, change this to regex to match the numbers
+        ch_suffixes_unique = np.unique([ch[0] for ch in split_channels])
 
-            ch_suffix_order = {}
-            for ch_suffix in ch_suffixes_unique:
-                ch_suffix_order[ch_suffix] = [ch for ch in split_channels if ch_suffix in ch]
-            
-            return {
-                'ch_suffixes_unique': list(ch_suffixes_unique),
-                'ch_suffix_order': ch_suffix_order 
-            }
+        ch_suffix_order = {}
+        for ch_suffix in ch_suffixes_unique:
+            ch_suffix_order[ch_suffix] = [ch for ch in split_channels if ch_suffix in ch]
+        
+        return {
+            'ch_suffixes_unique': list(ch_suffixes_unique),
+            'ch_suffix_order': ch_suffix_order 
+        }
 
 def extract_bci_data(h5_data, selected_channels, electrode_labels, states, patient_id, gain, current_experiment):
     eeglabels = electrode_labels['eeglabels']
