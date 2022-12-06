@@ -26,12 +26,12 @@ def _generate_trial_sxx_data(data_func, indices):
 def _window_spectrogram(sxx, shift, window_size):
     return np.moveaxis(sliding_window_view(sxx, window_shape=window_size, axis=1), [0, -1], [1, -2])[::shift, ...]
 
-def generate_model_sxx_data(spectrogram_dict, curated_states_partition, sessions, model_data_params, current_experiment, patient_id):
+def generate_model_sxx_data(spectrogram_dict, curated_states_partition, sessions, model_data_params, current_experiment, patient_id, spectrogram_params):
     pre_stimulus_time = model_data_params['pre_stimulus_time']
     post_completion_time = model_data_params['post_completion_time']
 
     window_size = model_data_params['window_size']
-    shift = model_data_params['shift']
+    shift = spectrogram_params['shift']
 
     model_data_dict = {}
     model_data_filenames_dict = {}
@@ -255,8 +255,8 @@ def _generate_train_test_split_indices(model_data_filenames_dict, model_data_fil
         'test_list_idx': np.array(test_list),
         'train_labels_list': np.array(train_labels_list),
         'test_labels_list': np.array(test_labels_list),
-        'train_filenames': model_data_filenames[np.array(train_list)],
-        'test_filenames': model_data_filenames[np.array(test_list)]
+        'train_filenames': np.array(model_data_filenames)[np.array(train_list)],
+        'test_filenames': np.array(model_data_filenames)[np.array(test_list)]
     }
 
 def experiment_dataloader_collate(data):

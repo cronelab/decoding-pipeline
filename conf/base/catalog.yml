@@ -72,16 +72,16 @@
 #     format: png
   # layer: reporting
 
-# center_out_curated_states_pkl:
-#   type: PartitionedDataSet
-#   dataset:
-#     type: pickle.PickleDataSet
-#     backend: joblib
-#     save_args:
-#       compress: 3
-#   path: data/03_primary/CC01/ccCenterOut/curated_states
-#   filename_suffix: ".lz4"
-#   layer: primary
+center_out_curated_states_pkl:
+  type: PartitionedDataSet
+  dataset:
+    type: pickle.PickleDataSet
+    backend: joblib
+    save_args:
+      compress: 3
+  path: data/03_primary/CC01/ccCenterOut/curated_states
+  filename_suffix: ".lz4"
+  layer: primary
 
 # center_out_extracted_pkl:
 #   type: PartitionedDataSet
@@ -137,16 +137,16 @@
 #   filename_suffix: ".pkl"
 #   layer: primary
 
-# center_out_spectrogram_std_pkl:
-#   type: PartitionedDataSet
-#   dataset:
-#     type: pickle.PickleDataSet
-#     backend: joblib
-#     save_args:
-#       compress: 3
-#   path: data/03_primary/CC01/ccCenterOut/spectrograms_std
-#   filename_suffix: ".lz4"
-#   layer: primary
+center_out_spectrogram_std_pkl:
+  type: PartitionedDataSet
+  dataset:
+    type: pickle.PickleDataSet
+    backend: joblib
+    save_args:
+      compress: 3
+  path: data/03_primary/CC01/ccCenterOut/spectrograms_std
+  filename_suffix: ".lz4"
+  layer: primary
 
 center_out_model_spectrogram_std_pkl:
   type: PartitionedDataSet

@@ -12,7 +12,7 @@ def create_pipeline(**kwargs) -> Pipeline:
     model_feature_generation_pipeline = pipeline([
         node(
             func=generate_model_sxx_data,
-            inputs=["center_out_spectrogram_std_pkl", "center_out_curated_states_pkl", "params:sessions", "params:model_data_params", "params:current_experiment", "params:patient_id"],
+            inputs=["center_out_spectrogram_std_pkl", "center_out_curated_states_pkl", "params:sessions", "params:model_data_params", "params:current_experiment", "params:patient_id", "params:spectrogram_params"],
             outputs=["center_out_model_spectrogram_std_pkl", "center_out_model_spectrogram_indices", "center_out_model_filenames"],
             name="generate_model_windowed_sxx_data_node"
         ),
