@@ -7,7 +7,7 @@ from scripts.utility_scripts import create_closure, create_closure_func
 import numpy as np
 from numpy.lib.stride_tricks import sliding_window_view
 
-from custom_pytorch_datasets import CorticomExperimentDataset
+from .custom_pytorch_datasets import CorticomExperimentDataset
 
 def _generate_trial_sxx_data(data_func, indices):
     sxx_data_dict = data_func()

@@ -8,7 +8,6 @@ from kedro.pipeline.modular_pipeline import pipeline
 
 from .nodes import generate_model_sxx_data, _generate_train_test_split_indices
 
-
 def create_pipeline(**kwargs) -> Pipeline:
     model_feature_generation_pipeline = pipeline([
         node(
@@ -23,7 +22,6 @@ def create_pipeline(**kwargs) -> Pipeline:
             outputs="center_out_train_test_indices",
             name="generate_train_test_split_node"
         ),
-        
     ])
 
     return model_feature_generation_pipeline

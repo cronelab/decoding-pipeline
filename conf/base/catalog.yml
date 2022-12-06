@@ -3,32 +3,32 @@
 # Documentation for this file format can be found in "The Data Catalog"
 # Link: https://kedro.readthedocs.io/en/stable/05_data/01_data_catalog.html
 
-center_out_dat:
-  type: PartitionedDataSet
-  dataset: decoding_pipeline.io.dat_dataset.DATDataset
-  path: data/01_raw/CC01/ccCenterOut
-  filename_suffix: ".dat"
+# center_out_dat:
+#   type: PartitionedDataSet
+#   dataset: decoding_pipeline.io.dat_dataset.DATDataset
+#   path: data/01_raw/CC01/ccCenterOut
+#   filename_suffix: ".dat"
   # layer: raw
 
-center_out_hdf5:
-  type: PartitionedDataSet
-  dataset: decoding_pipeline.io.hdf5_dataset.HDF5Dataset
-  path: data/01_raw/CC01/ccCenterOut
-  filename_suffix: ".hdf5"
+# center_out_hdf5:
+#   type: PartitionedDataSet
+#   dataset: decoding_pipeline.io.hdf5_dataset.HDF5Dataset
+#   path: data/01_raw/CC01/ccCenterOut
+#   filename_suffix: ".hdf5"
   # layer: raw
 
-calibration_dat:
-  type: PartitionedDataSet
-  dataset: decoding_pipeline.io.dat_dataset.DATDataset
-  path: data/01_raw/CC01/ccCalibration
-  filename_suffix: ".dat"
+# calibration_dat:
+#   type: PartitionedDataSet
+#   dataset: decoding_pipeline.io.dat_dataset.DATDataset
+#   path: data/01_raw/CC01/ccCalibration
+#   filename_suffix: ".dat"
   # layer: raw
 
-calibration_hdf5:
-  type: PartitionedDataSet
-  dataset: decoding_pipeline.io.hdf5_dataset.HDF5Dataset
-  path: data/01_raw/CC01/ccCalibration
-  filename_suffix: ".hdf5"
+# calibration_hdf5:
+#   type: PartitionedDataSet
+#   dataset: decoding_pipeline.io.hdf5_dataset.HDF5Dataset
+#   path: data/01_raw/CC01/ccCalibration
+#   filename_suffix: ".hdf5"
   # layer: raw
 
 # average_spectrogram_plots:
@@ -72,16 +72,16 @@ calibration_hdf5:
 #     format: png
   # layer: reporting
 
-center_out_curated_states_pkl:
-  type: PartitionedDataSet
-  dataset:
-    type: pickle.PickleDataSet
-    backend: joblib
-    save_args:
-      compress: 3
-  path: data/03_primary/CC01/ccCenterOut/curated_states
-  filename_suffix: ".lz4"
-  layer: primary
+# center_out_curated_states_pkl:
+#   type: PartitionedDataSet
+#   dataset:
+#     type: pickle.PickleDataSet
+#     backend: joblib
+#     save_args:
+#       compress: 3
+#   path: data/03_primary/CC01/ccCenterOut/curated_states
+#   filename_suffix: ".lz4"
+#   layer: primary
 
 # center_out_extracted_pkl:
 #   type: PartitionedDataSet
@@ -137,16 +137,16 @@ center_out_curated_states_pkl:
 #   filename_suffix: ".pkl"
 #   layer: primary
 
-center_out_spectrogram_std_pkl:
-  type: PartitionedDataSet
-  dataset:
-    type: pickle.PickleDataSet
-    backend: joblib
-    save_args:
-      compress: 3
-  path: data/03_primary/CC01/ccCenterOut/spectrograms_std
-  filename_suffix: ".lz4"
-  layer: primary
+# center_out_spectrogram_std_pkl:
+#   type: PartitionedDataSet
+#   dataset:
+#     type: pickle.PickleDataSet
+#     backend: joblib
+#     save_args:
+#       compress: 3
+#   path: data/03_primary/CC01/ccCenterOut/spectrograms_std
+#   filename_suffix: ".lz4"
+#   layer: primary
 
 center_out_model_spectrogram_std_pkl:
   type: PartitionedDataSet
